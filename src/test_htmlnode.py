@@ -6,18 +6,18 @@ from htmlnode import HTMLNode, LeafNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_printed_nodes(self):
-        node = HTMLNode("test paragraph", "p")
+        node = HTMLNode("p", "test paragraph")
         node2 = HTMLNode(
-            "",
             "a",
+            "",
+            [node],
             {
                 "href": "https://www.google.com",
                 "target": "_blank",
             },
-            [node],
         )
-        self.assertEqual(str(node), "HTMLNode(test paragraph, p, None, None)")
-        node2_printed = "HTMLNode(, a, {'href': 'https://www.google.com', 'target': '_blank'}, [HTMLNode(test paragraph, p, None, None)])"
+        self.assertEqual(str(node), "HTMLNode(p, test paragraph, None, None)")
+        node2_printed = "HTMLNode(a, , [HTMLNode(p, test paragraph, None, None)], {'href': 'https://www.google.com', 'target': '_blank'})"
         self.assertEqual(str(node2), node2_printed)
 
     def test_props_to_html(self):
@@ -37,14 +37,18 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(str(node), "HTMLNode(None, None, None, None)")
 
     def test_leaf_to_html_p(self):
-        node = LeafNode("Hello, world!", "p")
+        node = LeafNode("p", "Hello, world!")
         self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
 
     def test_leaf_to_html_a(self):
-        node = LeafNode("Click me!", "a", {"href": "https://www.google.com"})
+        node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
         self.assertEqual(
             node.to_html(), '<a href="https://www.google.com">Click me!</a>'
         )
+
+    def test_leaf_to_html_no_value(self):
+        with self.assertRaises(ValueError):
+            LeafNode()
 
 
 if __name__ == "__main__":
