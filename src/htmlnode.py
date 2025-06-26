@@ -55,4 +55,5 @@ class ParentNode(HTMLNode):
         super().__init__(tag=tag, value=None, children=children, props=props)
 
     def to_html(self) -> str | None:
-        pass
+        inner_string = "".join([child.to_html() for child in self.children])
+        return f"<{self.tag}{self.props_to_html()}>{inner_string}</{self.tag}>"
