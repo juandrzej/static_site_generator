@@ -4,7 +4,7 @@ class HTMLNode:
         tag: str | None = None,
         value: str | None = None,
         children: list[object] | None = None,
-        props: dict[str, str] | None = None,
+        props: dict | None = None,
     ) -> None:
         self.tag = tag
         self.value = value
@@ -29,7 +29,7 @@ class LeafNode(HTMLNode):
         self,
         tag: str | None = None,
         value: str | None = None,
-        props: dict[str, str] | None = None,
+        props: dict | None = None,
     ) -> None:
         if value is None:
             raise ValueError("Child.__init__() missing required argument: 'value'")
@@ -46,7 +46,7 @@ class ParentNode(HTMLNode):
         self,
         tag: str | None = None,
         children: list[object] | None = None,
-        props: dict[str, str] | None = None,
+        props: dict | None = None,
     ) -> None:
         if tag is None:
             raise ValueError("Child.__init__() missing required argument: 'tag'")
