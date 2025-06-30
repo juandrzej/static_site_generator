@@ -1,3 +1,15 @@
+from enum import Enum
+
+
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    ULIST = "unordered_list"
+    OLIST = "ordered_list"
+
+
 def markdown_to_blocks(markdown: str) -> list[str]:
     # targets specifically trailing whitespaces on few line paragraphs
     markdown = "\n".join(map(str.strip, markdown.split("\n")))
