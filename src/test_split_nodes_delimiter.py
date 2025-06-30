@@ -35,7 +35,6 @@ class TestSplitNodes(unittest.TestCase):
 
         expected_nodes = [
             bold_node,  # Unchanged
-            TextNode("", TextType.TEXT),
             TextNode("code", TextType.CODE),
             TextNode(" and regular text", TextType.TEXT),
             italic_node,  # Unchanged

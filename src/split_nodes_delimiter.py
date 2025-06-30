@@ -9,14 +9,16 @@ def split_nodes_delimiter(
         if node.text_type != TextType.TEXT:
             result_nodes_list.append(node)
             continue
-        if node.text.count(delimiter) != 2:
-            raise Exception("That's invalid Markdown syntax.")
-        start, mid, end = node.text.split(delimiter)
-        result_nodes_list.extend(
-            [
-                TextNode(start, TextType.TEXT),
-                TextNode(mid, text_type),
-                TextNode(end, TextType.TEXT),
-            ]
-        )
+        if node.text.count(delimiter) == 0:
+            result_nodes_list.append(node)
+            continue
+        if node.text.count(delimiter) == 2:
+            start, mid, end = node.text.split(delimiter)
+            if start:
+                result_nodes_list.append(TextNode(start, TextType.TEXT))
+            result_nodes_list.append(TextNode(mid, text_type))
+            if end:
+                result_nodes_list.append(TextNode(end, TextType.TEXT))
+            continue
+        raise Exception("That's invalid Markdown syntax.")
     return result_nodes_list
