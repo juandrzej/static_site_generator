@@ -1,6 +1,6 @@
 import unittest
 
-from split_blocks import markdown_to_blocks
+from split_blocks import BlockType, markdown_to_blocks, block_to_block_type_functions
 
 
 class TestSplitBlocks(unittest.TestCase):
@@ -124,6 +124,94 @@ And here's more text"""
                 '```python\ndef hello():\nprint("world")\n```',
                 "And here's more text",
             ],
+        )
+
+
+class TestBlockToLockType(unittest.TestCase):
+    def test_heading(self):
+        self.assertEqual(
+            BlockType.HEADING, block_to_block_type_functions("# tsjfbsjkbfj")
+        )
+
+    def test_heading2(self):
+        self.assertEqual(
+            BlockType.HEADING, block_to_block_type_functions("### tsjfbsjkbfj")
+        )
+
+    def test_heading3(self):
+        self.assertEqual(
+            BlockType.HEADING, block_to_block_type_functions("###### tsjfbsjkbfj")
+        )
+
+    def test_heading_too_many_hashes(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH,
+            block_to_block_type_functions("####### Not a valid heading"),
+        )
+
+    def test_heading_missing_space(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("###Not a valid heading")
+        )
+
+    def test_code_block(self):
+        self.assertEqual(
+            BlockType.CODE, block_to_block_type_functions("```\ncode here\n```")
+        )
+
+    def test_code_block_single_line(self):
+        self.assertEqual(
+            BlockType.CODE, block_to_block_type_functions("```print('hi')```")
+        )
+
+    def test_code_block_incomplete(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("```not closed")
+        )
+
+    def test_quote_block(self):
+        self.assertEqual(
+            BlockType.QUOTE, block_to_block_type_functions("> to be\n> or not")
+        )
+
+    def test_quote_block_missing_symbol(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("> good\nbad")
+        )
+
+    def test_unordered_list(self):
+        self.assertEqual(
+            BlockType.ULIST, block_to_block_type_functions("- alpha\n- beta")
+        )
+
+    def test_unordered_list_missing_dash(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("- first\nsecond")
+        )
+
+    def test_ordered_list(self):
+        self.assertEqual(
+            BlockType.OLIST, block_to_block_type_functions("1. one\n2. two\n3. three")
+        )
+
+    def test_ordered_list_skips_a_number(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("1. first\n3. third")
+        )
+
+    def test_ordered_list_duplicate_number(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("1. first\n1. second")
+        )
+
+    def test_ordered_list_non_number(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("one. first\n2. second")
+        )
+
+    def test_paragraph(self):
+        self.assertEqual(
+            BlockType.PARAGRAPH, block_to_block_type_functions("just some text")
         )
 
 
