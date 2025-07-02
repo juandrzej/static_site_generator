@@ -45,7 +45,7 @@ class ParentNode(HTMLNode):
     def __init__(
         self,
         tag: str | None = None,
-        children: list[object] | None = None,
+        children: list[LeafNode] | None = None,
         props: dict | None = None,
     ) -> None:
         if tag is None:
