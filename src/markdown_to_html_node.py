@@ -1,15 +1,13 @@
 """
-Quote blocks should be surrounded by a <blockquote> tag.
 Unordered list blocks should be surrounded by a <ul> tag, and each list item should be surrounded by a <li> tag.
 Ordered list blocks should be surrounded by a <ol> tag, and each list item should be surrounded by a <li> tag.
 Headings should be surrounded by a <h1> to <h6> tag, depending on the number of # characters.
 """
 
-from types import CodeType
 from htmlnode import HTMLNode, LeafNode, ParentNode
 from split_blocks import BlockType, markdown_to_blocks, block_to_block_type_functions
 from text_to_textnodes import text_to_textnodes
-from textnode import TextNode, text_node_to_html_node
+from textnode import text_node_to_html_node
 
 
 def _code_block_clean(block: str) -> str:
