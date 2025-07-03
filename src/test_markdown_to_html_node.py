@@ -10,7 +10,6 @@ This is text that _should_ remain
 the **same** even with inline stuff
 ```
 """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
@@ -25,15 +24,68 @@ text in a p
 tag here
 
 This is another paragraph with _italic_ text and `code` here
-
 """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
             html,
             "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
         )
+
+    def test_blockquote_simple(self):
+        md = """
+> This is a simple blockquote
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a simple blockquote</blockquote></div>",
+        )
+
+    def test_blockquote_multiline(self):
+        md = """
+> This is a blockquote
+> with multiple lines
+> all part of the same quote
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a blockquote with multiple lines all part of the same quote</blockquote></div>",
+        )
+
+    def test_blockquote_with_inline_markdown(self):
+        md = """
+> This blockquote has **bold** text
+> and _italic_ text too
+> plus some `code` in it
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This blockquote has <b>bold</b> text and <i>italic</i> text too plus some <code>code</code> in it</blockquote></div>",
+        )
+
+
+def test_blockquote_mixed_with_other_blocks(self):
+    md = """
+This is a paragraph.
+
+> This is a blockquote
+> with multiple lines
+
+Another paragraph here.
+"""
+
+    node = markdown_to_html_node(md)
+    html = node.to_html()
+    self.assertEqual(
+        html,
+        "<div><p>This is a paragraph.</p><blockquote>This is a blockquote with multiple lines</blockquote><p>Another paragraph here.</p></div>",
+    )
 
     def test_headings(self):
         md = """

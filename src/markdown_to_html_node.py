@@ -23,27 +23,41 @@ def block_to_node(block: str) -> ParentNode:
     if block_type == BlockType.CODE:
         return ParentNode("pre", [LeafNode("code", _code_block_clean(block))])
 
-    # For now removes enters as br tag hasn't been introduced yet
-    block = " ".join(block.split("\n"))
-
     # Return ParentNode based on block_type, mainly to give html tags
     if block_type == BlockType.PARAGRAPH:
+        # For now removes enters as br tag hasn't been introduced yet
+        block = " ".join(block.split("\n"))
         children = _produce_children(block)
         return ParentNode("p", children)
+
     if block_type == BlockType.QUOTE:
+        # I assume that must be better solution for this but it works for now :P
+        block = " ".join(block.split("\n")).replace("> ", "")
         children = _produce_children(block)
         return ParentNode("blockquote", children)
+
     if block_type == BlockType.HEADING:
         heading_count: int = block[:6].count("#")
         # Removes hashes first and their trailing space
         children = _produce_children(block[heading_count + 1 :])
         return ParentNode(f"h{heading_count}", children)
 
+    if block_type == BlockType.ULIST:
+        # I assume that must be better solution for this but it works for now :P
+        block = "</li><li>".join(block.split("\n"))
+        children = _produce_children(block)
+        return ParentNode("ul", children)
+
+    if block_type == BlockType.OLIST:
+        # I assume that must be better solution for this but it works for now :P
+        block = "</li><li>".join(block.split("\n"))
+        children = _produce_children(block)
+        return ParentNode("ol", children)
+
 
 """
 Unordered list blocks should be surrounded by a <ul> tag, and each list item should be surrounded by a <li> tag.
 Ordered list blocks should be surrounded by a <ol> tag, and each list item should be surrounded by a <li> tag.
-Headings should be surrounded by a <h1> to <h6> tag, depending on the number of # characters.
 """
 
 
