@@ -69,9 +69,8 @@ This is another paragraph with _italic_ text and `code` here
             "<div><blockquote>This blockquote has <b>bold</b> text and <i>italic</i> text too plus some <code>code</code> in it</blockquote></div>",
         )
 
-
-def test_blockquote_mixed_with_other_blocks(self):
-    md = """
+    def test_blockquote_mixed_with_other_blocks(self):
+        md = """
 This is a paragraph.
 
 > This is a blockquote
@@ -79,13 +78,12 @@ This is a paragraph.
 
 Another paragraph here.
 """
-
-    node = markdown_to_html_node(md)
-    html = node.to_html()
-    self.assertEqual(
-        html,
-        "<div><p>This is a paragraph.</p><blockquote>This is a blockquote with multiple lines</blockquote><p>Another paragraph here.</p></div>",
-    )
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is a paragraph.</p><blockquote>This is a blockquote with multiple lines</blockquote><p>Another paragraph here.</p></div>",
+        )
 
     def test_headings(self):
         md = """
@@ -133,6 +131,59 @@ Another paragraph here.
         self.assertEqual(
             html,
             "<div><h2>Just one heading</h2></div>",
+        )
+
+    def test_unordered_list_simple(self):
+        md = """
+- First item
+- Second item
+- Third item
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>First item</li><li>Second item</li><li>Third item</li></ul></div>",
+        )
+
+    def test_unordered_list_with_inline_markdown(self):
+        md = """
+    - This item has **bold** text
+    - This item has _italic_ text
+    - This item has `code` text
+    """
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>This item has <b>bold</b> text</li><li>This item has <i>italic</i> text</li><li>This item has <code>code</code> text</li></ul></div>",
+        )
+
+    def test_unordered_list_mixed_with_other_blocks(self):
+        md = """
+    Here's a paragraph.
+
+    - First list item
+    - Second list item
+
+    Another paragraph.
+    """
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>Here's a paragraph.</p><ul><li>First list item</li><li>Second list item</li></ul><p>Another paragraph.</p></div>",
+        )
+
+    def test_unordered_list_single_item(self):
+        md = """
+    - Just one item
+    """
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>Just one item</li></ul></div>",
         )
 
 

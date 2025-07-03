@@ -44,21 +44,15 @@ def block_to_node(block: str) -> ParentNode:
 
     if block_type == BlockType.ULIST:
         # I assume that must be better solution for this but it works for now :P
-        block = "</li><li>".join(block.split("\n"))
+        block = "</li>".join(block.split("\n")).replace("- ", "<li>") + "</li>"
         children = _produce_children(block)
         return ParentNode("ul", children)
 
     if block_type == BlockType.OLIST:
         # I assume that must be better solution for this but it works for now :P
-        block = "</li><li>".join(block.split("\n"))
+        block = "</li>".join(block.split("\n")).replace("- ", "<li>") + "</li>"
         children = _produce_children(block)
         return ParentNode("ol", children)
-
-
-"""
-Unordered list blocks should be surrounded by a <ul> tag, and each list item should be surrounded by a <li> tag.
-Ordered list blocks should be surrounded by a <ol> tag, and each list item should be surrounded by a <li> tag.
-"""
 
 
 def markdown_to_html_node(markdown: str) -> HTMLNode:
