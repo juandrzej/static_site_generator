@@ -43,7 +43,7 @@ def _is_olist(block: str) -> bool:
     return all([blk.startswith(f"{blocks.index(blk) + 1}. ") for blk in blocks])
 
 
-def block_to_block_type_functions(block: str) -> BlockType:
+def block_to_block_type(block: str) -> BlockType:
     if _is_heading(block):
         return BlockType.HEADING
     if _is_code_block(block):

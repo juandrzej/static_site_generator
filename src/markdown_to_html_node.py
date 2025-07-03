@@ -1,5 +1,5 @@
 from htmlnode import HTMLNode, LeafNode, ParentNode
-from split_blocks import BlockType, markdown_to_blocks, block_to_block_type_functions
+from split_blocks import BlockType, markdown_to_blocks, block_to_block_type
 from text_to_textnodes import text_to_textnodes
 from textnode import text_node_to_html_node
 
@@ -64,7 +64,7 @@ def _olist_to_node(block: str) -> ParentNode:
 def block_to_node(block: str) -> ParentNode:
     """Takes block string and outputs ParentNode
     with corresponding html tag and children included."""
-    block_type: BlockType = block_to_block_type_functions(block)
+    block_type: BlockType = block_to_block_type(block)
 
     return_dict = {
         BlockType.CODE: _code_to_node,
