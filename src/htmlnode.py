@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import Union
 
 
 class HTMLNode:
@@ -49,7 +48,7 @@ class ParentNode(HTMLNode):
     def __init__(
         self,
         tag: str | None,
-        children: list[Union[HTMLNode, LeafNode, ParentNode]] | None,
+        children: list[LeafNode] | list[ParentNode] | None,
         props: dict | None = None,
     ) -> None:
         if tag is None:
