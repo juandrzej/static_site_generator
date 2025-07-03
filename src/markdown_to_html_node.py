@@ -74,20 +74,10 @@ def block_to_node(block: str) -> ParentNode:
         BlockType.ULIST: _ulist_to_node,
         BlockType.OLIST: _olist_to_node,
     }
-    return return_dict.get(block_type)(block)
-    # # Return ParentNode based on block_type, mainly to give html tags
-    # if block_type == BlockType.CODE:
-    #     return _code_to_node(block)
-    # if block_type == BlockType.PARAGRAPH:
-    #     return _paragraph_to_node(block)
-    # if block_type == BlockType.HEADING:
-    #     return _heading_to_node(block)
-    # if block_type == BlockType.QUOTE:
-    #     return _quote_to_node(block)
-    # if block_type == BlockType.ULIST:
-    #     return _ulist_to_node(block)
-    # if block_type == BlockType.OLIST:
-    #     return _olist_to_node(block)
+    func = return_dict.get(block_type)
+    if func is None:
+        raise ValueError(f"No function found for block_type: {block_type}")
+    return func(block)
 
 
 def markdown_to_html_node(markdown: str) -> HTMLNode:
