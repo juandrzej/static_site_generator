@@ -1,9 +1,13 @@
+from __future__ import annotations
+from typing import Union
+
+
 class HTMLNode:
     def __init__(
         self,
         tag: str | None = None,
         value: str | None = None,
-        children: list[object] | None = None,
+        children: list | None = None,
         props: dict | None = None,
     ) -> None:
         self.tag = tag
@@ -44,8 +48,8 @@ class LeafNode(HTMLNode):
 class ParentNode(HTMLNode):
     def __init__(
         self,
-        tag: str | None = None,
-        children: list[LeafNode] | None = None,
+        tag: str | None,
+        children: list[Union[HTMLNode, LeafNode, ParentNode]] | None,
         props: dict | None = None,
     ) -> None:
         if tag is None:
