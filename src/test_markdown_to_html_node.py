@@ -186,6 +186,73 @@ Another paragraph here.
             "<div><ul><li>Just one item</li></ul></div>",
         )
 
+    def test_ordered_list_simple(self):
+        md = """
+1. First item
+2. Second item
+3. Third item
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>First item</li><li>Second item</li><li>Third item</li></ol></div>",
+        )
+
+    def test_ordered_list_with_inline_markdown(self):
+        md = """
+1. This item has **bold** text
+2. This item has _italic_ text
+3. This item has `code` text
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>This item has <b>bold</b> text</li><li>This item has <i>italic</i> text</li><li>This item has <code>code</code> text</li></ol></div>",
+        )
+
+    def test_ordered_list_mixed_with_other_blocks(self):
+        md = """
+Here's a paragraph.
+
+1. First list item
+2. Second list item
+
+Another paragraph.
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>Here's a paragraph.</p><ol><li>First list item</li><li>Second list item</li></ol><p>Another paragraph.</p></div>",
+        )
+
+    def test_ordered_list_single_item(self):
+        md = """
+1. Just one item
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>Just one item</li></ol></div>",
+        )
+
+    def test_ordered_list_wrong_numbering_becomes_paragraph(self):
+        md = """
+    2. This starts with 2 instead of 1
+    3. So it should be treated as a paragraph
+    4. Not as an ordered list
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>2. This starts with 2 instead of 1 3. So it should be treated as a paragraph 4. Not as an ordered list</p></div>",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

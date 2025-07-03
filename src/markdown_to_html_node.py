@@ -50,7 +50,12 @@ def block_to_node(block: str) -> ParentNode:
 
     if block_type == BlockType.OLIST:
         # I assume that must be better solution for this but it works for now :P
-        block = "</li>".join(block.split("\n")).replace("- ", "<li>") + "</li>"
+        block_lines = block.split("\n")
+        block_lines_cleaned = [
+            item.replace(f"{block_lines.index(item) + 1}. ", "<li>")
+            for item in block_lines
+        ]
+        block = "</li>".join(block_lines_cleaned) + "</li>"
         children = _produce_children(block)
         return ParentNode("ol", children)
 
