@@ -1,5 +1,6 @@
 import os
 import shutil
+from generate_page import generate_page
 
 PUBLIC_DIR_PATH = "public/"
 STATIC_DIR_PATH = "static/"
@@ -34,6 +35,7 @@ def copy_static_to_public(current_path: str | None = None) -> None:
 def main() -> None:
     clear_public_dir()
     copy_static_to_public()
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 if __name__ == "__main__":

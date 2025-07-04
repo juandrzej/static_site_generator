@@ -14,7 +14,7 @@ class HTMLNode:
         self.children = children
         self.props = props
 
-    def to_html(self) -> str | None:
+    def to_html(self) -> str:
         raise NotImplementedError
 
     def props_to_html(self) -> str:
@@ -38,7 +38,7 @@ class LeafNode(HTMLNode):
             raise ValueError("Child.__init__() missing required argument: 'value'")
         super().__init__(value=value, tag=tag, children=None, props=props)
 
-    def to_html(self) -> str | None:
+    def to_html(self) -> str:
         if self.tag is None:
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
@@ -57,6 +57,6 @@ class ParentNode(HTMLNode):
             raise ValueError("Child.__init__() missing required argument: 'children'")
         super().__init__(tag=tag, value=None, children=children, props=props)
 
-    def to_html(self) -> str | None:
+    def to_html(self) -> str:
         inner_string = "".join([child.to_html() for child in self.children])
         return f"<{self.tag}{self.props_to_html()}>{inner_string}</{self.tag}>"
