@@ -3,8 +3,10 @@ from extract_title import extract_title
 from markdown_to_html_node import markdown_to_html_node
 
 
-def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
-    """Generates html page from md file. Please provide src file in .md nad dest file in .html"""
+def generate_page(
+    from_path: str, template_path: str, dest_path: str, base_path: str
+) -> None:
+    """Generates html page from md file. Please provide src file in .md nad dest file in .html. Provide base_path for website navigation."""
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r", encoding="utf-8") as f:
@@ -18,13 +20,15 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     static_site = template.replace("{{ Title }}", title).replace(
         "{{ Content }}", content
     )
+    static_site = static_site.replace('href="/', f'href="{base_path}')
+    static_site = static_site.replace('src="/', f'src="{base_path}')
 
     with open(dest_path, "w", encoding="utf-8") as f:
         f.write(static_site)
 
 
 def generate_pages_recursive(
-    dir_path_content: str, template_path: str, dest_dir_path: str
+    dir_path_content: str, template_path: str, dest_dir_path: str, base_path: str
 ) -> None:
     """Crawls recursively thru content dir copying whole structure to dest dir.
     .md files will be generated into .html pages. Other files and dirs will be moved as they are."""
@@ -36,7 +40,7 @@ def generate_pages_recursive(
 
         if os.path.isfile(src_path):
             dest_path = dest_path.replace(".md", ".html")
-            generate_page(src_path, template_path, dest_path)
+            generate_page(src_path, template_path, dest_path, base_path)
         else:
             os.makedirs(dest_path)
-            generate_pages_recursive(src_path, template_path, dest_path)
+            generate_pages_recursive(src_path, template_path, dest_path, base_path)
