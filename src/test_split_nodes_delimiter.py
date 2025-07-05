@@ -53,6 +53,20 @@ class TestSplitNodes(unittest.TestCase):
             ],
         )
 
+    def test_bold_double(self):
+        node = TextNode("This is **bold text** with **bold text** in it", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("bold text", TextType.BOLD),
+                TextNode(" with ", TextType.TEXT),
+                TextNode("bold text", TextType.BOLD),
+                TextNode(" in it", TextType.TEXT),
+            ],
+        )
+
     def test_italic(self):
         node = TextNode("This is text with _italic text_ in it", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
@@ -66,9 +80,20 @@ class TestSplitNodes(unittest.TestCase):
         )
 
     def test_multiple_delimiters_same_type(self):
-        node = TextNode("`code1` and `code2`", TextType.TEXT)
-        with self.assertRaises(Exception):
-            split_nodes_delimiter([node], "`", TextType.CODE)
+        node = TextNode("`code1` and `code2` and `code3` and `code4`", TextType.TEXT)
+        result = split_nodes_delimiter([node], "`", TextType.CODE)
+        self.assertEqual(
+            result,
+            [
+                TextNode("code1", TextType.CODE),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("code2", TextType.CODE),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("code3", TextType.CODE),
+                TextNode(" and ", TextType.TEXT),
+                TextNode("code4", TextType.CODE),
+            ],
+        )
 
 
 if __name__ == "__main__":
