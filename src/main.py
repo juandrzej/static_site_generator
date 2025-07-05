@@ -3,7 +3,7 @@ import shutil
 import sys
 from generate_page import generate_pages_recursive
 
-PUBLIC_DIR_PATH = "public"
+PUBLIC_DIR_PATH = "docs"
 STATIC_DIR_PATH = "static"
 CONTENT_DIR_PATH = "content"
 TEMPLATE_HTML_FILE = "template.html"
