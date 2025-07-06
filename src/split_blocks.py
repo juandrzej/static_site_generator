@@ -12,14 +12,16 @@ class BlockType(Enum):
 
 
 def markdown_to_blocks(markdown: str) -> list[str]:
-    # targets specifically trailing whitespaces on few line paragraphs
-    markdown = "\n".join(map(str.strip, markdown.split("\n")))
-    # splits paragraphs after removing whole stings traling whitespaces
-    blocks = markdown.strip().split("\n\n")
-    # removes trailing whitespaces if there were more than 2 empty lines in between
-    blocks = map(str.strip, blocks)
-    # filter blanks
-    return list(filter(None, blocks))
+    """
+    Splits a markdown string into a list of blocks by blank lines.
+    Strips trailing and leading whitespace from each line and removes empty blocks.
+    """
+    lines = [line.strip() for line in markdown.splitlines()]
+    cleaned_markdown = "\n".join(lines).strip()
+    blocks = [
+        block.strip() for block in cleaned_markdown.split("\n\n") if block.strip()
+    ]
+    return blocks
 
 
 def _is_heading(block: str) -> bool:
@@ -31,19 +33,22 @@ def _is_code_block(block: str) -> bool:
 
 
 def _is_quote(block: str) -> bool:
-    return all([blk.startswith(">") for blk in block.split("\n")])
+    return all(line.startswith(">") for line in block.splitlines())
 
 
 def _is_ulist(block: str) -> bool:
-    return all([blk.startswith("- ") for blk in block.split("\n")])
+    return all(line.startswith("- ") for line in block.splitlines())
 
 
 def _is_olist(block: str) -> bool:
-    blocks = block.split("\n")
-    return all([blk.startswith(f"{blocks.index(blk) + 1}. ") for blk in blocks])
+    lines = block.splitlines()
+    return all(line.startswith(f"{i + 1}. ") for i, line in enumerate(lines))
 
 
 def block_to_block_type(block: str) -> BlockType:
+    """
+    Determines the markdown block type of a block and returns the corresponding BlockType.
+    """
     if _is_heading(block):
         return BlockType.HEADING
     if _is_code_block(block):
