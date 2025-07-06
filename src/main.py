@@ -10,25 +10,32 @@ TEMPLATE_HTML_FILE = "template.html"
 
 
 def clear_public_dir() -> None:
+    """Clear the site directory and recreate it."""
     if os.path.exists(PUBLIC_DIR_PATH):
         shutil.rmtree(PUBLIC_DIR_PATH)
     os.mkdir(PUBLIC_DIR_PATH)
 
 
-def copy_static_to_public(current_path: str | None = None) -> None:
-    if current_path is None:
-        current_path = STATIC_DIR_PATH
-    files = os.listdir(current_path)
+def copy_static_to_public(static_path: str | None = None) -> None:
+    """Copy all static content to public directory recursively."""
+    if static_path is None:
+        static_path = STATIC_DIR_PATH
     # relpath would be more generic but maybe this is even "safer" ?
-    current_pub_path = current_path.replace(STATIC_DIR_PATH, PUBLIC_DIR_PATH)
+    public_path = static_path.replace(STATIC_DIR_PATH, PUBLIC_DIR_PATH)
 
-    for file in files:
-        file_path = os.path.join(current_path, file)
-        if os.path.isfile(file_path):
-            shutil.copyfile(file_path, os.path.join(current_pub_path, file))
-        if os.path.isdir(file_path):
-            os.mkdir(os.path.join(current_pub_path, file))
-            copy_static_to_public(file_path)
+    items = os.listdir(static_path)
+    for item in items:
+        item_static_path = os.path.join(static_path, item)
+        item_public_path = os.path.join(public_path, item)
+
+        # If it's a file, just copy it
+        if os.path.isfile(item_static_path):
+            shutil.copyfile(item_static_path, item_public_path)
+
+        # If it's a dir, create it and public and go thru it recursively
+        if os.path.isdir(item_static_path):
+            os.mkdir(item_public_path)
+            copy_static_to_public(item_static_path)
 
 
 def main() -> None:
@@ -36,6 +43,7 @@ def main() -> None:
         base_path: str = sys.argv[1]
     except IndexError:
         base_path = "/"
+
     clear_public_dir()
     copy_static_to_public()
     generate_pages_recursive(
