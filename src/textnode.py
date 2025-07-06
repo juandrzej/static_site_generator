@@ -12,10 +12,17 @@ class TextType(Enum):
 
 
 class TextNode:
+    """
+    Represents a single contiguous piece of text in the parsed Markdown document.
+    TextNode instances are used as leaf nodes within the overall HTML node tree.
+    They may optionally include type information if the text should be rendered
+    with special formatting, such as bold, italics, or code.
+    """
+
     def __init__(self, text: str, text_type: TextType, url: str | None = None) -> None:
-        self.text: str = text
-        self.text_type: TextType = text_type
-        self.url: str | None = url
+        self.text = text
+        self.text_type = text_type
+        self.url = url
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, TextNode):
@@ -31,20 +38,19 @@ class TextNode:
 
 
 def text_node_to_html_node(text_node: TextNode) -> LeafNode:
+    text = text_node.text
+    url = text_node.url
+
     return_dict = {
-        TextType.TEXT: LeafNode(None, text_node.text),
-        TextType.BOLD: LeafNode("b", text_node.text),
-        TextType.ITALIC: LeafNode("i", text_node.text),
-        TextType.CODE: LeafNode("code", text_node.text),
-        TextType.LINK: LeafNode("a", text_node.text, {"href": text_node.url}),
-        TextType.IMAGE: LeafNode(
-            "img",
-            "",
-            {"src": text_node.url, "alt": text_node.text},
-        ),
+        TextType.TEXT: LeafNode(None, text),
+        TextType.BOLD: LeafNode("b", text),
+        TextType.ITALIC: LeafNode("i", text),
+        TextType.CODE: LeafNode("code", text),
+        TextType.LINK: LeafNode("a", text, {"href": url}),
+        TextType.IMAGE: LeafNode("img", "", {"src": url, "alt": text}),
     }
 
-    def raise_invalid_type():
+    try:
+        return return_dict[text_node.text_type]
+    except KeyError:
         raise Exception("Invalid text type")
-
-    return return_dict.get(text_node.text_type, raise_invalid_type)
