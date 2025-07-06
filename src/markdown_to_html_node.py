@@ -1,12 +1,12 @@
 from htmlnode import HTMLNode, LeafNode, ParentNode
 from split_blocks import BlockType, markdown_to_blocks, block_to_block_type
-from text_to_textnodes import text_to_textnodes
+from markdown_to_textnodes import markdown_to_textnodes
 from textnode import text_node_to_html_node
 
 
 def _produce_children(block: str) -> list[LeafNode]:
     """Takes md string which is processed into text nodes and finally html nodes"""
-    return [text_node_to_html_node(node) for node in text_to_textnodes(block)]
+    return [text_node_to_html_node(node) for node in markdown_to_textnodes(block)]
 
 
 def _code_to_node(block: str) -> ParentNode:

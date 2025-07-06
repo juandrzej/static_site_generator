@@ -1,12 +1,12 @@
 import unittest
 
-from text_to_textnodes import text_to_textnodes
+from markdown_to_textnodes import markdown_to_textnodes
 from textnode import TextNode, TextType
 
 
 class TestMain(unittest.TestCase):
     def test_text_to_textnodes(self):
-        nodes = text_to_textnodes(
+        nodes = markdown_to_textnodes(
             "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         )
         self.assertListEqual(
@@ -28,14 +28,14 @@ class TestMain(unittest.TestCase):
         )
 
     def test_text_only_plain_text(self):
-        nodes = text_to_textnodes("This is just plain text.")
+        nodes = markdown_to_textnodes("This is just plain text.")
         self.assertListEqual(
             [TextNode("This is just plain text.", TextType.TEXT)],
             nodes,
         )
 
     def test_text_only_bold(self):
-        nodes = text_to_textnodes("**Bold text only**")
+        nodes = markdown_to_textnodes("**Bold text only**")
         self.assertListEqual(
             [
                 TextNode("Bold text only", TextType.BOLD),
@@ -63,7 +63,7 @@ class TestMain(unittest.TestCase):
     #     )
 
     def test_text_markdown_at_start_end(self):
-        nodes = text_to_textnodes("**Start** and _end_.")
+        nodes = markdown_to_textnodes("**Start** and _end_.")
         self.assertListEqual(
             [
                 TextNode("Start", TextType.BOLD),
@@ -75,7 +75,7 @@ class TestMain(unittest.TestCase):
         )
 
     def test_text_with_images_and_links_only(self):
-        nodes = text_to_textnodes(
+        nodes = markdown_to_textnodes(
             "![image 1](url1) and [link 1](url2) then ![image 2](url3)"
         )
         self.assertListEqual(
@@ -90,7 +90,7 @@ class TestMain(unittest.TestCase):
         )
 
     def test_empty_string(self):
-        nodes = text_to_textnodes("")
+        nodes = markdown_to_textnodes("")
         self.assertListEqual([], nodes)
 
 
