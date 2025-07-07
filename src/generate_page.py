@@ -1,4 +1,5 @@
 import os
+import shutil
 from extract_title import extract_title
 from markdown_to_html_node import markdown_to_html_node
 
@@ -39,8 +40,12 @@ def generate_pages_recursive(
         dest_path = os.path.join(dest_dir_path, item)
 
         if os.path.isfile(src_path):
-            dest_path = dest_path.replace(".md", ".html")
-            generate_page(src_path, template_path, dest_path, base_path)
+            if src_path.endswith(".md"):
+                dest_path = dest_path.replace(".md", ".html")
+                generate_page(src_path, template_path, dest_path, base_path)
+            else:
+                # Optionally, copy other types of files instead of converting
+                shutil.copy2(src_path, dest_path)
         else:
             os.makedirs(dest_path)
             generate_pages_recursive(src_path, template_path, dest_path, base_path)
