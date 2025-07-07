@@ -5,7 +5,10 @@ from textnode import text_node_to_html_node
 
 
 def _produce_children(block: str) -> list[LeafNode]:
-    """Takes md string which is processed into text nodes and finally html nodes"""
+    """
+    Converts the given markdown block into HTML leaf nodes
+    by first parsing text nodes, then converting each to HTML.
+    """
     return [text_node_to_html_node(node) for node in markdown_to_textnodes(block)]
 
 
@@ -18,7 +21,7 @@ def _code_to_node(block: str) -> ParentNode:
 
 def _paragraph_to_node(block: str) -> ParentNode:
     # For now removes enters as br tag hasn't been introduced yet
-    block = " ".join(block.split("\n"))
+    block = " ".join(block.splitlines())
     children = _produce_children(block)
     return ParentNode("p", children)
 
@@ -31,28 +34,22 @@ def _heading_to_node(block: str) -> ParentNode:
 
 
 def _quote_to_node(block: str) -> ParentNode:
-    quote_lines = []
-    for line in block.split("\n"):
-        quote_lines.append(line[2:])  # Remove "> "
-    quote_text = " ".join(quote_lines)
-    children = _produce_children(quote_text)
+    lines = [line[2:] for line in block.splitlines()]
+    text = " ".join(lines)
+    children = _produce_children(text)
     return ParentNode("blockquote", children)
 
 
 def _ulist_to_node(block: str) -> ParentNode:
-    parents = []
-    for line in block.split("\n"):
-        # Remove the "- " prefix
-        clean_line = line[2:]
-        # Create individual list item nodes
-        children = _produce_children(clean_line)
-        parents.append(ParentNode("li", children))
+    parents = [
+        ParentNode("li", _produce_children(line[2:])) for line in block.splitlines()
+    ]
     return ParentNode("ul", parents)
 
 
 def _olist_to_node(block: str) -> ParentNode:
     parents = []
-    for i, line in enumerate(block.split("\n")):
+    for i, line in enumerate(block.splitlines()):
         # Remove the "1. ", "2. ", etc. prefix
         clean_line = line[len(f"{i + 1}. ") :]
         # Create individual list item nodes
@@ -62,11 +59,11 @@ def _olist_to_node(block: str) -> ParentNode:
 
 
 def block_to_node(block: str) -> ParentNode:
-    """Takes block string and outputs ParentNode
-    with corresponding html tag and children included."""
+    """
+    Converts a markdown block to the appropriate ParentNode (HTML element with children).
+    """
     block_type: BlockType = block_to_block_type(block)
-
-    return_dict = {
+    mapping = {
         BlockType.CODE: _code_to_node,
         BlockType.PARAGRAPH: _paragraph_to_node,
         BlockType.HEADING: _heading_to_node,
@@ -74,9 +71,10 @@ def block_to_node(block: str) -> ParentNode:
         BlockType.ULIST: _ulist_to_node,
         BlockType.OLIST: _olist_to_node,
     }
-    func = return_dict.get(block_type)
+
+    func = mapping.get(block_type)
     if func is None:
-        raise ValueError(f"No function found for block_type: {block_type}")
+        raise ValueError(f"No conversion function for block type: {block_type}")
     return func(block)
 
 
